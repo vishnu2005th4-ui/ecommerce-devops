@@ -1,15 +1,357 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>E-Commerce Store</title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Professional DevOps Store</title>
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial,sans-serif;
+        }
+
+        body{
+            background:#f1f5f9;
+        }
+
+        header{
+            background:#0f172a;
+            color:white;
+            padding:20px 40px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            position:sticky;
+            top:0;
+            z-index:100;
+        }
+
+        .logo{
+            font-size:32px;
+            font-weight:bold;
+        }
+
+        .cart-box{
+            background:#f59e0b;
+            padding:12px 20px;
+            border-radius:10px;
+            font-weight:bold;
+            color:black;
+        }
+
+        .hero{
+            text-align:center;
+            padding:60px 20px;
+            background:linear-gradient(to right,#2563eb,#7c3aed);
+            color:white;
+        }
+
+        .hero h1{
+            font-size:50px;
+            margin-bottom:20px;
+        }
+
+        .hero p{
+            font-size:20px;
+        }
+
+        .search-bar{
+            text-align:center;
+            margin:30px;
+        }
+
+        .search-bar input{
+            width:60%;
+            padding:15px;
+            border:none;
+            border-radius:10px;
+            font-size:18px;
+            box-shadow:0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .products{
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+            gap:25px;
+            padding:40px;
+        }
+
+        .card{
+            background:white;
+            border-radius:16px;
+            padding:25px;
+            text-align:center;
+            box-shadow:0 4px 15px rgba(0,0,0,0.1);
+            transition:0.3s;
+        }
+
+        .card:hover{
+            transform:translateY(-8px);
+        }
+
+        .card img{
+            width:140px;
+            height:140px;
+            object-fit:contain;
+        }
+
+        .card h2{
+            margin:15px 0;
+            color:#0f172a;
+        }
+
+        .price{
+            color:green;
+            font-size:24px;
+            margin-bottom:15px;
+            font-weight:bold;
+        }
+
+        .btn{
+            border:none;
+            padding:12px 18px;
+            border-radius:10px;
+            font-size:16px;
+            cursor:pointer;
+            color:white;
+            transition:0.3s;
+        }
+
+        .add-btn{
+            background:#2563eb;
+        }
+
+        .add-btn:hover{
+            background:#1d4ed8;
+        }
+
+        .remove-btn{
+            background:#dc2626;
+            margin-left:10px;
+        }
+
+        .remove-btn:hover{
+            background:#b91c1c;
+        }
+
+        .cart-section{
+            margin:40px;
+            background:white;
+            border-radius:16px;
+            padding:30px;
+            box-shadow:0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .cart-item{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            border-bottom:1px solid #ddd;
+            padding:20px 0;
+        }
+
+        .quantity{
+            font-weight:bold;
+            color:#2563eb;
+        }
+
+        .total{
+            margin-top:20px;
+            font-size:28px;
+            font-weight:bold;
+            color:green;
+            text-align:right;
+        }
+
+        footer{
+            background:#0f172a;
+            color:white;
+            text-align:center;
+            padding:25px;
+            margin-top:40px;
+        }
+
+    </style>
+
 </head>
+
 <body>
 
-<h1>Simple E-Commerce Store</h1>
+<header>
 
-<h2>Laptop - ₹50000</h2>
-<h2>Phone - ₹20000</h2>
-<h2>Headphones - ₹3000</h2>
+    <div class="logo">
+        DevOps Store
+    </div>
+
+    <div class="cart-box">
+        Cart Items: {{ cart_count }}
+    </div>
+
+</header>
+
+<section class="hero">
+
+    <h1>Professional E-Commerce Store</h1>
+
+    <p>
+        Flask + Docker + Jenkins CI/CD Project
+    </p>
+
+</section>
+
+<div class="search-bar">
+
+    <input
+        type="text"
+        id="searchInput"
+        placeholder="Search products..."
+        onkeyup="searchProducts()"
+    >
+
+</div>
+
+<section class="products">
+
+    {% for product in products %}
+
+    <div class="card product-card">
+
+        <img src="{{ product.image }}">
+
+        <h2>{{ product.name }}</h2>
+
+        <div class="price">
+            ₹{{ product.price }}
+        </div>
+
+        <button
+            class="btn add-btn"
+            onclick="addToCart('{{ product.id }}')"
+        >
+            Add to Cart
+        </button>
+
+        <button
+            class="btn remove-btn"
+            onclick="removeFromCart('{{ product.id }}')"
+        >
+            - Remove
+        </button>
+
+    </div>
+
+    {% endfor %}
+
+</section>
+
+<section class="cart-section">
+
+    <h1>
+        Shopping Cart
+    </h1>
+
+    {% if cart_items %}
+
+        {% for item in cart_items %}
+
+        <div class="cart-item">
+
+            <div>
+
+                <h2>
+                    {{ item.name }}
+                </h2>
+
+                <p>
+                    ₹{{ item.price }}
+                </p>
+
+            </div>
+
+            <div>
+
+                <p class="quantity">
+                    Quantity: {{ item.quantity }}
+                </p>
+
+                <p>
+                    Subtotal: ₹{{ item.subtotal }}
+                </p>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+        <div class="total">
+            Total: ₹{{ total }}
+        </div>
+
+    {% else %}
+
+        <p style="margin-top:20px;">
+            No items in cart
+        </p>
+
+    {% endif %}
+
+</section>
+
+<footer>
+    Advanced DevOps CI/CD E-Commerce Project using Flask + Docker + Jenkins
+</footer>
+
+<script>
+
+async function addToCart(productId){
+
+    await fetch(`/add_to_cart/${productId}`,{
+        method:'POST'
+    });
+
+    location.reload();
+}
+
+async function removeFromCart(productId){
+
+    await fetch(`/remove_from_cart/${productId}`,{
+        method:'POST'
+    });
+
+    location.reload();
+}
+
+function searchProducts(){
+
+    let input = document
+    .getElementById('searchInput')
+    .value
+    .toLowerCase();
+
+    let cards = document
+    .getElementsByClassName('product-card');
+
+    for(let i=0;i<cards.length;i++){
+
+        let title = cards[i]
+        .getElementsByTagName('h2')[0];
+
+        if(title.innerHTML.toLowerCase().indexOf(input)>-1){
+            cards[i].style.display='block';
+        }else{
+            cards[i].style.display='none';
+        }
+    }
+}
+
+</script>
 
 </body>
 </html>
